@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Timestamp Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<style>
+		a{
+			text-decoration: none;
+			color:blueviolet;
+			font-size: small;
+		}
+		html{
+			font-family: 'Roboto', sans-serif;
+			color:white;
+			background-color: rgb(23,23,23);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			font-size: larger;
+			text-align: center;
+		}
+		.text{
+			font-size: small;
+			
+		}
+	</style>
+</head>
+
+<body>
+    <div id="timer"></div>
+	<a href="https://discord.schafter.pl">Join us on discord</a>
+    <script>
+        // Set the initial timestamp (in seconds since the Unix epoch)
+        const startTime = 1684965600; // Replace this with your desired timestamp
+
+        // Function to update the timer
+        function updateTimer() {
+            const currentTime = new Date().getTime() / 1000; // Current time in seconds
+            let elapsedTime = currentTime - startTime;
+
+            const secondsPerMinute = 60;
+            const minutesPerHour = 60;
+            const hoursPerDay = 24;
+            const daysPerMonth = 30.44; // Average days per month
+
+            const months = Math.floor(elapsedTime / (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute));
+            elapsedTime -= months * (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute);
+            const days = Math.floor(elapsedTime / (hoursPerDay * minutesPerHour * secondsPerMinute));
+            elapsedTime -= days * (hoursPerDay * minutesPerHour * secondsPerMinute);
+            const hours = Math.floor(elapsedTime / (minutesPerHour * secondsPerMinute));
+            elapsedTime -= hours * (minutesPerHour * secondsPerMinute);
+            const minutes = Math.floor(elapsedTime / secondsPerMinute);
+            const seconds = Math.floor(elapsedTime % secondsPerMinute);
+
+            // Display the timer in the "timer" div
+            document.getElementById("timer").innerHTML = `
+			<p>${months} months</p>
+			<p>${days} days</p>
+			<p>${hours} hours</p>
+			<p>${minutes} minutes</p>
+			<p>${seconds} seconds</p>
+			<p class="text">since last schafter release!</p>
+        `;
+        }
+
+        // Update the timer every second
+        setInterval(updateTimer, 1000);
+
+        // Initial update
+        updateTimer();
+    </script>
+</body>
+
+</html>
