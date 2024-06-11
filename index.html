@@ -6,33 +6,34 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-	<style>
-		a{
-			text-decoration: none;
-			color:blueviolet;
-			font-size: small;
-		}
-		html{
-			font-family: 'Roboto', sans-serif;
-			color:white;
-			background-color: rgb(23,23,23);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			height: 100vh;
-			font-size: larger;
-			text-align: center;
-		}
-		.text{
-			font-size: small;
-			
-		}
-	</style>
+    <style>
+        a {
+            text-decoration: none;
+            color: blueviolet;
+            font-size: small;
+        }
+
+        html {
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            background-color: rgb(23, 23, 23);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-size: larger;
+            text-align: center;
+        }
+
+        .text {
+            font-size: small;
+        }
+    </style>
 </head>
 
 <body>
     <div id="timer"></div>
-	<a href="https://discord.schafter.pl">Join us on discord</a>
+    <a href="https://discord.schafter.pl">Join us on discord</a>
     <script>
         // Set the initial timestamp (in seconds since the Unix epoch)
         const startTime = 1684965600; // Replace this with your desired timestamp
@@ -45,8 +46,11 @@
             const secondsPerMinute = 60;
             const minutesPerHour = 60;
             const hoursPerDay = 24;
+            const daysPerYear = 365.25; // Average days per year considering leap years
             const daysPerMonth = 30.44; // Average days per month
 
+            const years = Math.floor(elapsedTime / (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute));
+            elapsedTime -= years * (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute);
             const months = Math.floor(elapsedTime / (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute));
             elapsedTime -= months * (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute);
             const days = Math.floor(elapsedTime / (hoursPerDay * minutesPerHour * secondsPerMinute));
@@ -58,13 +62,14 @@
 
             // Display the timer in the "timer" div
             document.getElementById("timer").innerHTML = `
-			<p>${months} months</p>
-			<p>${days} days</p>
-			<p>${hours} hours</p>
-			<p>${minutes} minutes</p>
-			<p>${seconds} seconds</p>
-			<p class="text">since last schafter release!</p>
-        `;
+                <p>${years} year${years !== 1 ? 's' : ''}</p>
+                <p>${months} month${months !== 1 ? 's' : ''}</p>
+                <p>${days} day${days !== 1 ? 's' : ''}</p>
+                <p>${hours} hour${hours !== 1 ? 's' : ''}</p>
+                <p>${minutes} minute${minutes !== 1 ? 's' : ''}</p>
+                <p>${seconds} second${seconds !== 1 ? 's' : ''}</p>
+                <p class="text">since last schafter release!</p>
+            `;
         }
 
         // Update the timer every second
