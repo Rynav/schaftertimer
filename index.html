@@ -20,34 +20,146 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             font-size: larger;
             text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .timers-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .timer-box {
+            background-color: rgb(33, 33, 33);
+            border-radius: 10px;
+            padding: 25px 40px;
+            border: 2px solid rgb(50, 50, 50);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .album-info {
+            flex: 0 0 200px;
+        }
+
+        .album-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: blueviolet;
+            margin-bottom: 5px;
+        }
+
+        .timer-display {
+            flex: 1;
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.7em;
+            color: rgb(150, 150, 150);
+            margin-top: 5px;
         }
 
         .text {
             font-size: small;
+            color: rgb(180, 180, 180);
+            flex: 0 0 100%;
+            text-align: center;
+            margin: 0;
         }
     </style>
 </head>
 
 <body>
-    <div id="timer"></div>
-    <a href="https://discord.schafter.pl">Join us on discord</a>
-    <script>
-        // Set the initial timestamp (in seconds since the Unix epoch)
-        const startTime = 1761868800; // Replace this with your desired timestamp
+    <div class="container">
+        <div class="timers-grid">
+            <div class="timer-box">
+                <div class="album-info">
+                    <div class="album-title">Hors d'oeuvre</div>
+                </div>
+                <div class="timer-display" id="timer1"></div>
+            </div>
 
-        // Function to update the timer
-        function updateTimer() {
-            const currentTime = new Date().getTime() / 1000; // Current time in seconds
+            <div class="timer-box">
+                <div class="album-info">
+                    <div class="album-title">Audiotele</div>
+                </div>
+                <div class="timer-display" id="timer2"></div>
+            </div>
+
+            <div class="timer-box">
+                <div class="album-info">
+                    <div class="album-title">FUTURA</div>
+                </div>
+                <div class="timer-display" id="timer3"></div>
+            </div>
+
+            <div class="timer-box">
+                <div class="album-info">
+                    <div class="album-title">RAMOTKA</div>
+                </div>
+                <div class="timer-display" id="timer4"></div>
+            </div>
+
+            <div class="timer-box">
+                <div class="album-info">
+                    <div class="album-title">Latest Release</div>
+                </div>
+                <div class="timer-display" id="timer5"></div>
+            </div>
+        </div>
+
+        <a href="https://discord.schafter.pl">Join us on discord</a>
+    </div>
+
+    <script>
+        // Album release timestamps (in seconds since Unix epoch)
+        const albums = [
+            { id: 'timer1', timestamp: 1540944000 },  // Hors d'oeuvre - Oct 31, 2018
+            { id: 'timer2', timestamp: 1574380800 },  // Audiotele - Nov 22, 2019
+            { id: 'timer3', timestamp: 1606348800 },  // FUTURA - Nov 26, 2020
+            { id: 'timer4', timestamp: 1685059200 },  // RAMOTKA - May 25, 2023
+            { id: 'timer5', timestamp: 1761868800 }   // Next Release
+        ];
+
+        // Function to calculate and format time elapsed
+        function calculateElapsedTime(startTime) {
+            const currentTime = new Date().getTime() / 1000;
             let elapsedTime = currentTime - startTime;
 
             const secondsPerMinute = 60;
             const minutesPerHour = 60;
             const hoursPerDay = 24;
-            const daysPerYear = 365.25; // Average days per year considering leap years
-            const daysPerMonth = 30.44; // Average days per month
+            const daysPerYear = 365.25;
+            const daysPerMonth = 30.44;
 
             const years = Math.floor(elapsedTime / (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute));
             elapsedTime -= years * (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute);
@@ -60,23 +172,48 @@
             const minutes = Math.floor(elapsedTime / secondsPerMinute);
             const seconds = Math.floor(elapsedTime % secondsPerMinute);
 
-            // Display the timer in the "timer" div
-            document.getElementById("timer").innerHTML = `
-                <p>${years} year${years !== 1 ? 's' : ''}</p>
-                <p>${months} month${months !== 1 ? 's' : ''}</p>
-                <p>${days} day${days !== 1 ? 's' : ''}</p>
-                <p>${hours} hour${hours !== 1 ? 's' : ''}</p>
-                <p>${minutes} minute${minutes !== 1 ? 's' : ''}</p>
-                <p>${seconds} second${seconds !== 1 ? 's' : ''}</p>
-                <p class="text">since last schafter release!</p>
-            `;
+            return { years, months, days, hours, minutes, seconds };
         }
 
-        // Update the timer every second
-        setInterval(updateTimer, 1000);
+        // Function to update all timers
+        function updateTimers() {
+            albums.forEach(album => {
+                const time = calculateElapsedTime(album.timestamp);
+                
+                document.getElementById(album.id).innerHTML = `
+                    <div class="time-unit">
+                        <p class="timer-value">${time.years}</p>
+                        <span class="time-label">year${time.years !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="time-unit">
+                        <p class="timer-value">${time.months}</p>
+                        <span class="time-label">month${time.months !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="time-unit">
+                        <p class="timer-value">${time.days}</p>
+                        <span class="time-label">day${time.days !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="time-unit">
+                        <p class="timer-value">${time.hours}</p>
+                        <span class="time-label">hour${time.hours !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="time-unit">
+                        <p class="timer-value">${time.minutes}</p>
+                        <span class="time-label">minute${time.minutes !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="time-unit">
+                        <p class="timer-value">${time.seconds}</p>
+                        <span class="time-label">second${time.seconds !== 1 ? 's' : ''}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // Update all timers every second
+        setInterval(updateTimers, 1000);
 
         // Initial update
-        updateTimer();
+        updateTimers();
     </script>
 </body>
 
