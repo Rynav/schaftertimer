@@ -149,14 +149,16 @@
     </div>
 
     <script>
-        // Album release timestamps (in seconds since Unix epoch)
+        const upcomingDate = new Date('2025-11-21T00:00:00+01:00'); // CET is UTC+1 in November
+        const upcomingTimestamp = Math.floor(upcomingDate.getTime() / 1000);
+        
         const albums = [
             { id: 'timer1', timestamp: 1540944000, countdown: false },  // Hors d'oeuvre - Oct 31, 2018
             { id: 'timer2', timestamp: 1574380800, countdown: false },  // Audiotele - Nov 22, 2019
             { id: 'timer3', timestamp: 1606348800, countdown: false },  // FUTURA - Nov 26, 2020
             { id: 'timer4', timestamp: 1685059200, countdown: false },  // RAMOTKA - May 25, 2023
             { id: 'timer5', timestamp: 1761868800, countdown: false },  // Last Release
-            { id: 'timer6', timestamp: 1763740800, countdown: true }    // Upcoming Release - Nov 21, 2025 00:00 Warsaw (CET UTC+1)
+            { id: 'timer6', timestamp: upcomingTimestamp, countdown: true }    // Upcoming Release - Nov 21, 2025 00:00 Warsaw
         ];
 
         // Function to calculate and format time elapsed or remaining
