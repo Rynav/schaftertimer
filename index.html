@@ -134,7 +134,14 @@
                     <div class="album-title">Last Release</div>
                 </div>
                 <div class="timer-display" id="timer5"></div>
-                <p class="text"> Latest release single is called "Moment"</p>
+                <p class="text">Latest release single is called "Moment"</p>
+            </div>
+
+            <div class="timer-box" style="border-color: blueviolet;">
+                <div class="album-info">
+                    <div class="album-title" style="color: #00ff88;">Palimpsest</div>
+                </div>
+                <div class="timer-display" id="timer6"></div>
             </div>
         </div>
 
@@ -144,17 +151,18 @@
     <script>
         // Album release timestamps (in seconds since Unix epoch)
         const albums = [
-            { id: 'timer1', timestamp: 1540944000 },  // Hors d'oeuvre - Oct 31, 2018
-            { id: 'timer2', timestamp: 1574380800 },  // Audiotele - Nov 22, 2019
-            { id: 'timer3', timestamp: 1606348800 },  // FUTURA - Nov 26, 2020
-            { id: 'timer4', timestamp: 1685059200 },  // RAMOTKA - May 25, 2023
-            { id: 'timer5', timestamp: 1761868800 }   // Next Release
+            { id: 'timer1', timestamp: 1540944000, countdown: false },  // Hors d'oeuvre - Oct 31, 2018
+            { id: 'timer2', timestamp: 1574380800, countdown: false },  // Audiotele - Nov 22, 2019
+            { id: 'timer3', timestamp: 1606348800, countdown: false },  // FUTURA - Nov 26, 2020
+            { id: 'timer4', timestamp: 1685059200, countdown: false },  // RAMOTKA - May 25, 2023
+            { id: 'timer5', timestamp: 1761868800, countdown: false },  // Last Release
+            { id: 'timer6', timestamp: 1763740800, countdown: true }    // Upcoming Release - Nov 21, 2025 00:00 Warsaw (CET UTC+1)
         ];
 
-        // Function to calculate and format time elapsed
-        function calculateElapsedTime(startTime) {
+        // Function to calculate and format time elapsed or remaining
+        function calculateTime(targetTime, isCountdown) {
             const currentTime = new Date().getTime() / 1000;
-            let elapsedTime = currentTime - startTime;
+            let timeDiff = isCountdown ? targetTime - currentTime : currentTime - targetTime;
 
             const secondsPerMinute = 60;
             const minutesPerHour = 60;
@@ -162,16 +170,16 @@
             const daysPerYear = 365.25;
             const daysPerMonth = 30.44;
 
-            const years = Math.floor(elapsedTime / (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute));
-            elapsedTime -= years * (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute);
-            const months = Math.floor(elapsedTime / (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute));
-            elapsedTime -= months * (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute);
-            const days = Math.floor(elapsedTime / (hoursPerDay * minutesPerHour * secondsPerMinute));
-            elapsedTime -= days * (hoursPerDay * minutesPerHour * secondsPerMinute);
-            const hours = Math.floor(elapsedTime / (minutesPerHour * secondsPerMinute));
-            elapsedTime -= hours * (minutesPerHour * secondsPerMinute);
-            const minutes = Math.floor(elapsedTime / secondsPerMinute);
-            const seconds = Math.floor(elapsedTime % secondsPerMinute);
+            const years = Math.floor(timeDiff / (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute));
+            timeDiff -= years * (daysPerYear * hoursPerDay * minutesPerHour * secondsPerMinute);
+            const months = Math.floor(timeDiff / (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute));
+            timeDiff -= months * (daysPerMonth * hoursPerDay * minutesPerHour * secondsPerMinute);
+            const days = Math.floor(timeDiff / (hoursPerDay * minutesPerHour * secondsPerMinute));
+            timeDiff -= days * (hoursPerDay * minutesPerHour * secondsPerMinute);
+            const hours = Math.floor(timeDiff / (minutesPerHour * secondsPerMinute));
+            timeDiff -= hours * (minutesPerHour * secondsPerMinute);
+            const minutes = Math.floor(timeDiff / secondsPerMinute);
+            const seconds = Math.floor(timeDiff % secondsPerMinute);
 
             return { years, months, days, hours, minutes, seconds };
         }
@@ -179,7 +187,7 @@
         // Function to update all timers
         function updateTimers() {
             albums.forEach(album => {
-                const time = calculateElapsedTime(album.timestamp);
+                const time = calculateTime(album.timestamp, album.countdown);
                 
                 document.getElementById(album.id).innerHTML = `
                     <div class="time-unit">
